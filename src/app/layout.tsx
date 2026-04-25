@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, Syne, JetBrains_Mono } from "next/font/google";
+import SmoothScroll from "@/components/SmoothScroll";
+import IntroLoader from "@/components/IntroLoader";
 import "./globals.css";
 
 const bebas = Bebas_Neue({
@@ -21,9 +23,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Abdul-Tawab Tariq — Front-End Expert & AI Engineer",
+  title: "Abdeltawap Tarek El-Tawil | Software Engineer",
   description:
-    "Creating impactful digital solutions with advanced AI capabilities.",
+    "Portfolio of Abdeltawap Tarek El-Tawil, Software Engineer. Creating impactful digital solutions with advanced technologies.",
 };
 
 export default function RootLayout({
@@ -32,11 +34,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <body
-        className={`${bebas.variable} ${syne.variable} ${mono.variable} noise`}
+        className={`${bebas.variable} ${syne.variable} ${mono.variable} noise bg-bg text-white selection:bg-accent/30 selection:text-white overflow-x-hidden w-full max-w-[100vw]`}
       >
-        {children}
+        {/* شاشة البداية اللي بتعرض الآية والحديث */}
+        <IntroLoader />
+
+        {/* السكرول الناعم اللي بيضم محتوى الموقع كله */}
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );

@@ -3,78 +3,94 @@ import { motion } from "framer-motion";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-surface border-t border-border overflow-hidden pt-24 pb-10 px-8 md:px-16">
-      {/* شبكة خلفية خفيفة */}
+    <footer className="relative bg-[#050505] border-t border-border overflow-hidden pt-20 pb-6 px-6 md:px-12 lg:px-16 flex flex-col items-center">
+      
+      {/* إضاءة خلفية سينمائية وشبكة */}
       <div className="absolute inset-0 bg-[radial-gradient(#2C2926_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-accent/10 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* الجزء العلوي من الفوتر */}
-      <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-10 mb-20 max-w-7xl mx-auto">
-        
-        {/* Status Indicator */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="flex items-center gap-3 px-4 py-2 border border-border bg-[#0a0a0a]/50 backdrop-blur-sm"
-        >
+      {/* قسم الدعوة للعمل (Call to Action) - تم تصغير المسافات والخطوط */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="relative z-10 flex flex-col items-center text-center mb-10"
+      >
+        <div className="flex items-center gap-2 px-3 py-1.5 border border-accent/20 bg-accent/5 rounded-full mb-5 backdrop-blur-sm">
           <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-          <span className="font-mono text-[0.65rem] tracking-widest uppercase text-muted">
-            Currently accepting new clients
+          <span className="font-mono text-[0.6rem] tracking-widest uppercase text-accent2">
+            Available for freelance & collaborations
           </span>
-        </motion.div>
-
-        {/* Back to top Button */}
-        <motion.button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="group flex items-center gap-3 font-mono text-[0.65rem] tracking-widest uppercase text-muted hover:text-accent transition-colors duration-300"
+        </div>
+        
+        <h2 className="font-syne text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+          Let's build the <br /> 
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent2 italic font-serif pr-1">extraordinary.</span>
+        </h2>
+        
+        <motion.a
+          href="#contact"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-8 py-3.5 bg-white text-black font-bebas text-xl tracking-widest hover:bg-accent hover:text-white transition-colors duration-300 clip-br"
         >
-          Back to top
-          <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center group-hover:border-accent transition-colors duration-300">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="rotate-[-90deg]">
-              <path d="M5 12h14"></path>
-              <path d="M12 5l7 7-7 7"></path>
-            </svg>
-          </div>
-        </motion.button>
-      </div>
+          START A PROJECT
+        </motion.a>
+      </motion.div>
 
-      {/* الاسم العملاق (Cinematic Typography) */}
-      <div className="relative z-10 flex justify-center overflow-hidden mb-10 pointer-events-none select-none border-b border-border/40 pb-10">
-        <motion.h2 
-          initial={{ y: 100, opacity: 0 }}
+      {/* الاسم العملاق - تم تصغيره عشان مياخدش نص الشاشة */}
+      <div className="relative w-full flex justify-center items-center overflow-hidden mb-6 pointer-events-none select-none">
+        <motion.h1 
+          initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="font-bebas text-[clamp(4rem,15vw,16rem)] leading-[0.8] tracking-widest text-white/5"
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="font-bebas text-[clamp(3rem,12vw,10rem)] leading-[0.8] tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white/10 to-transparent"
         >
           ABDELTAWAP
-        </motion.h2>
+        </motion.h1>
       </div>
 
-      {/* الجزء السفلي (حقوق النشر) */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 max-w-7xl mx-auto font-mono text-[0.55rem] text-muted tracking-widest uppercase">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-        >
-          © 2026 Abdeltawap Tarek El-Tawil. All Rights Reserved.
-        </motion.div>
+      {/* شريط سفلي زجاجي عائم - ملموم أكتر */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto mt-auto">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-6 py-3 md:py-4 bg-white/[0.03] border border-white/10 backdrop-blur-xl md:rounded-full rounded-2xl">
+          
+          {/* حقوق النشر */}
+          <div className="font-mono text-[0.55rem] md:text-[0.6rem] text-muted tracking-widest uppercase text-center md:text-left">
+            © {new Date().getFullYear()} Abdeltawap Tarek.<br className="md:hidden" /> All Rights Reserved.
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6 }}
-        >
-          Architected with <span className="text-accent">Next.js</span> & <span className="text-white">Framer Motion</span>
-        </motion.div>
+          {/* اللوكيشن */}
+          <div className="font-mono text-[0.55rem] md:text-[0.6rem] text-white/40 tracking-widest uppercase hidden md:block">
+            ISTANBUL, TÜRKİYE
+          </div>
+
+          {/* زر العودة للأعلى */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="group flex items-center gap-2 font-mono text-[0.55rem] md:text-[0.6rem] tracking-widest uppercase text-white hover:text-accent transition-colors"
+          >
+            Back to top
+            <div className="w-6 h-6 md:w-7 md:h-7 rounded-full border border-white/20 flex items-center justify-center group-hover:border-accent group-hover:bg-accent/10 transition-all duration-300">
+              <svg 
+                width="10" 
+                height="10" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="rotate-[-90deg] group-hover:-translate-y-1 transition-transform"
+              >
+                <path d="M5 12h14"></path>
+                <path d="M12 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </button>
+          
+        </div>
       </div>
     </footer>
   );

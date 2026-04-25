@@ -10,24 +10,20 @@ const TITLES = [
   "CROSS-PLATFORM DEV",
 ];
 
+// 🧨 مكون الألعاب النارية الاحترافي 
 const FireworkText = ({ text, delay = 0, className = "" }: { text: string, delay?: number, className?: string }) => {
   const letters = Array.from(text);
 
   return (
     <div className={`relative inline-flex flex-wrap justify-center ${className}`}>
-      
-      {/* وميض الانفجار (Explosion Flash) */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-accent/40 blur-[50px] rounded-full pointer-events-none z-0"
         initial={{ scale: 0, opacity: 1 }}
         animate={{ scale: [0, 1.5, 0], opacity: [1, 0.6, 0] }}
         transition={{ duration: 1.5, ease: "easeOut", delay }}
       />
-
-      {/* شرار الألعاب النارية (Sparks) */}
       {Array.from({ length: 15 }).map((_, i) => {
         const angle = (i / 15) * Math.PI * 2;
-        // أرقام حسابية ثابتة عشان تدي شكل عشوائي بس متعملش Error في الـ Server
         const velocity = 80 + Math.abs(Math.sin(i * 12.5)) * 180; 
         const tx = Math.cos(angle) * velocity;
         const ty = Math.sin(angle) * velocity;
@@ -47,11 +43,8 @@ const FireworkText = ({ text, delay = 0, className = "" }: { text: string, delay
           />
         );
       })}
-
-      {/* حروف الاسم طايرة (Flying Letters) */}
       <span className="relative z-10 flex">
         {letters.map((char, index) => {
-          // توزيع الحروف بشكل دائري عشوائي
           const rx = Math.sin(index * 4.3) * 350;
           const ry = Math.cos(index * 2.1) * 350;
           const rz = Math.sin(index * 7.5) * 180;
@@ -67,7 +60,7 @@ const FireworkText = ({ text, delay = 0, className = "" }: { text: string, delay
                 type: "spring",
                 damping: 12,
                 stiffness: 150,
-                delay: delay + rDelay, // تأخير خفيف جداً بين كل حرف والتاني وقت الانفجار
+                delay: delay + rDelay, 
               }}
             >
               {char === " " ? "\u00A0" : char}
@@ -89,64 +82,53 @@ export default function Hero() {
   const [titleIdx, setTitleIdx] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setTitleIdx((i) => (i + 1) % TITLES.length), 2800);
-    return () => clearInterval(t);
+    // التايتل يبدأ يلف بعد 7 ثواني
+    const timeout = setTimeout(() => {
+      const t = setInterval(() => setTitleIdx((i) => (i + 1) % TITLES.length), 2800);
+      return () => clearInterval(t);
+    }, 7000);
+    return () => clearTimeout(timeout);
   }, []);
 
   return (
-    <section
-      ref={ref}
-      id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden"
-    >
-      {/* Grid BG */}
+    <section ref={ref} id="hero" className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-40" />
-
-      {/* Radial glows */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/2 right-1/3 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-accent/5 blur-[120px]" />
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full bg-accent3/5 blur-[100px]" />
       </div>
-
-      {/* Scanline */}
       <div className="scanline absolute inset-0 pointer-events-none z-10" />
 
-      <motion.div
-        style={{ y, opacity }}
-        className="relative z-20 w-full max-w-7xl mx-auto px-16 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-20 items-center"
-      >
-        {/* Left Content */}
+      {/* المسافات هنا متجاوبة: px-6 للموبايل و px-16 للكمبيوتر */}
+      <motion.div style={{ y, opacity }} className="relative z-20 w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-20 items-center">
         <div>
-          {/* Tag */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="inline-flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.18em] uppercase text-accent border border-accent/30 px-3 py-1.5 bg-accent/5 mb-8"
+            transition={{ duration: 0.8, delay: 7.2 }}
+            className="inline-flex items-center gap-2 font-mono text-[0.6rem] md:text-[0.65rem] tracking-[0.18em] uppercase text-accent border border-accent/30 px-3 py-1.5 bg-accent/5 mb-8"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-slow" />
             Web Development Expert
           </motion.div>
 
-          {/* 💥 الانفجار الأول للاسم 💥 */}
           <div className="overflow-visible mb-2 h-auto">
+            {/* حجم الخط بيصغر عالموبايل بشكل ذكي (clamp) */}
             <FireworkText 
               text="Abdeltawap" 
-              delay={0.3} 
-              className="font-bebas text-[clamp(3.5rem,8vw,7.5rem)] leading-[0.9] tracking-wide glow-text" 
+              delay={7.3} 
+              className="font-bebas text-[clamp(2.8rem,10vw,7.5rem)] leading-[0.9] tracking-wide glow-text" 
             />
           </div>
           
-          {/* 💥 الانفجار التاني لباقي الاسم 💥 */}
           <div className="overflow-visible mb-6 h-auto">
             <FireworkText 
               text="Tarek El-Tawil" 
-              delay={0.7} 
-              className="font-bebas text-[clamp(3.5rem,8vw,7.5rem)] leading-[0.9] tracking-wide text-accent" 
+              delay={7.7} 
+              className="font-bebas text-[clamp(2.8rem,10vw,7.5rem)] leading-[0.9] tracking-wide text-accent" 
             />
           </div>
 
-          {/* Rotating title */}
           <div className="h-8 mb-8 overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.p
@@ -155,69 +137,48 @@ export default function Hero() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -30, opacity: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="font-mono text-[0.75rem] tracking-[0.22em] uppercase text-accent2"
+                className="font-mono text-[0.7rem] md:text-[0.75rem] tracking-[0.22em] uppercase text-accent2"
               >
                 {TITLES[titleIdx]}
               </motion.p>
             </AnimatePresence>
           </div>
 
-          {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.7 }}
-            className="text-muted text-base leading-relaxed max-w-lg mb-10"
+            transition={{ delay: 8.5, duration: 0.7 }}
+            className="text-muted text-sm md:text-base leading-relaxed max-w-lg mb-10"
           >
             I build premium, high-performance web applications and digital experiences using cutting-edge technologies like React and Next.js. I turn complex logic into elegant, scalable architecture.
           </motion.p>
 
-          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.7, duration: 0.7 }}
+            transition={{ delay: 8.7, duration: 0.7 }}
             className="flex flex-wrap gap-4"
           >
-            <motion.a
-              href="#projects"
-              whileHover={{ scale: 1.03, x: 4 }}
-              whileTap={{ scale: 0.97 }}
-              className="clip-tl px-8 py-4 bg-accent text-bg font-mono text-[0.68rem] tracking-widest uppercase font-bold"
-            >
+            <motion.a href="#projects" whileHover={{ scale: 1.03, x: 4 }} whileTap={{ scale: 0.97 }} className="clip-tl px-6 md:px-8 py-3 md:py-4 bg-accent text-bg font-mono text-[0.6rem] md:text-[0.68rem] tracking-widest uppercase font-bold w-full md:w-auto text-center">
               View Projects
             </motion.a>
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.03, x: 4 }}
-              whileTap={{ scale: 0.97 }}
-              className="clip-br px-8 py-4 border border-border text-accent2 font-mono text-[0.68rem] tracking-widest uppercase hover:border-accent hover:text-accent transition-colors duration-300"
-            >
+            <motion.a href="#contact" whileHover={{ scale: 1.03, x: 4 }} whileTap={{ scale: 0.97 }} className="clip-br px-6 md:px-8 py-3 md:py-4 border border-border text-accent2 font-mono text-[0.6rem] md:text-[0.68rem] tracking-widest uppercase hover:border-accent hover:text-accent transition-colors duration-300 w-full md:w-auto text-center">
               Book a Call
             </motion.a>
           </motion.div>
         </div>
 
-        {/* Right — Avatar card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.85, rotate: 3 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, delay: 8.8, ease: [0.16, 1, 0.3, 1] }}
           className="relative hidden lg:block"
         >
           <div className="float">
-            {/* Glow behind */}
             <div className="absolute inset-0 bg-accent/10 blur-[60px] scale-110 rounded-full" />
-
-            {/* Card */}
             <div className="group relative w-[320px] h-[400px] clip-both border border-border bg-surface overflow-hidden">
-              <Image
-                src="/prot-img.jpeg" 
-                alt="Abdeltawap Tarek El-Tawil"
-                fill
-                priority
-                className="object-cover object-top filter grayscale-[30%] group-hover:grayscale-0 transition-all duration-700"
-              />
+              {/* صورتك أهي هنا متظبطة ✅ */}
+              <Image src="/prot-img.jpeg" alt="Abdeltawap Tarek El-Tawil" fill priority className="object-cover object-top filter grayscale-[30%] group-hover:grayscale-0 transition-all duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-90" />
               <div className="absolute top-0 left-0 w-16 h-px bg-gradient-to-r from-accent to-transparent" />
               <div className="absolute top-0 left-0 h-16 w-px bg-gradient-to-b from-accent to-transparent" />
@@ -225,22 +186,16 @@ export default function Hero() {
               <div className="absolute bottom-0 right-0 h-16 w-px bg-gradient-to-t from-accent to-transparent" />
             </div>
 
-            {/* Stats card */}
             <motion.div
               initial={{ x: 40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 2.2, duration: 0.7 }}
+              transition={{ delay: 9.2, duration: 0.7 }}
               className="absolute -bottom-6 -right-10 bg-surface border border-border clip-tl px-6 py-5 min-w-[150px] shadow-2xl"
             >
-              {[
-                { num: "Next.js", label: "Core Framework" },
-                { num: "React", label: "UI Architecture" },
-              ].map((s) => (
+              {[ { num: "Next.js", label: "Core Framework" }, { num: "React", label: "UI Architecture" } ].map((s) => (
                 <div key={s.label} className="mb-4 last:mb-0">
                   <div className="font-bebas text-2xl text-accent leading-none tracking-wide">{s.num}</div>
-                  <div className="font-mono text-[0.55rem] text-muted tracking-widest uppercase mt-1">
-                    {s.label}
-                  </div>
+                  <div className="font-mono text-[0.55rem] text-muted tracking-widest uppercase mt-1">{s.label}</div>
                 </div>
               ))}
             </motion.div>
@@ -248,19 +203,14 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.5 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        transition={{ delay: 9.5 }}
+        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="font-mono text-[0.55rem] tracking-widest uppercase text-muted">Scroll</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="w-px h-10 bg-gradient-to-b from-accent/60 to-transparent"
-        />
+        <span className="font-mono text-[0.5rem] md:text-[0.55rem] tracking-widest uppercase text-muted">Scroll</span>
+        <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-px h-8 md:h-10 bg-gradient-to-b from-accent/60 to-transparent" />
       </motion.div>
     </section>
   );

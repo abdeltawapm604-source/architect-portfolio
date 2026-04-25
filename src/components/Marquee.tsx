@@ -1,48 +1,75 @@
 "use client";
 import { motion } from "framer-motion";
 
-// حطيت لك مهارات تقيلة تعكس خبرتك في الويب والموبايل
 const SKILLS = [
   "Software Engineering",
   "React",
   "Next.js",
   "TypeScript",
   "Tailwind CSS",
-  "Flutter",
-  "Dart",
   "UI/UX Architecture",
-  "Cross-Platform Dev",
 ];
 
 export default function Marquee() {
-  return (
-    <div className="relative overflow-hidden border-y border-border py-5 bg-surface flex">
-      {/* تأثير التلاشي (Fade) على الأطراف لشكل سينمائي */}
-      <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-surface to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-surface to-transparent z-10 pointer-events-none" />
+  // كررنا المهارات 4 مرات عشان نضمن إن الشريط ميخلصش أبداً على الشاشات الكبيرة
+  const duplicatedSkills = [...SKILLS, ...SKILLS, ...SKILLS, ...SKILLS];
 
-      {/* شريط التحرك بـ Framer Motion */}
+  return (
+    <div className="relative overflow-hidden border-y border-border/50 py-6 bg-surface flex">
+      {/* ظلال أقوى على الأطراف عشان الكلمات تظهر وتختفي بنعومة */}
+      <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-bg to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-bg to-transparent z-10 pointer-events-none" />
+
+      {/* شريط التحرك */}
       <motion.div
-        className="flex gap-10 whitespace-nowrap w-max"
+        className="flex gap-12 whitespace-nowrap w-max items-center"
         animate={{ x: ["0%", "-50%"] }}
         transition={{
           ease: "linear",
-          duration: 25, // تقدر تقلل الرقم لو عايزه أسرع أو تزوده لو عايزه أبطأ
+          duration: 35, // بطأنا السرعة شوية عشان تدي إحساس بالفخامة
           repeat: Infinity,
         }}
       >
-        {/* بنكرر المصفوفة مرتين عشان اللوب (Loop) ميبقاش فيه أي قطع */}
-        {[...SKILLS, ...SKILLS].map((item, i) => (
-          <span
-            key={i}
-            className="font-bebas text-2xl tracking-widest text-muted flex items-center gap-10 cursor-default"
-          >
-            <span className="hover:text-accent transition-colors duration-300">
-              {item}
+        {duplicatedSkills.map((item, i) => {
+          // حركة تبادلية: كلمة عادية وكلمة مفرغة (Stroke)
+          const isOutline = i % 2 !== 0; 
+
+          return (
+            <span
+              key={i}
+              className="font-bebas text-4xl md:text-5xl tracking-[0.08em] flex items-center gap-12 cursor-pointer group"
+            >
+              <motion.span
+                className={`transition-all duration-500 ${
+                  isOutline
+                    ? "text-transparent"
+                    : "text-muted group-hover:text-accent group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                }`}
+                style={
+                  isOutline
+                    ? { WebkitTextStroke: "1px rgba(255,255,255,0.4)" }
+                    : {}
+                }
+                whileHover={
+                  isOutline
+                    ? { WebkitTextStroke: "1.5px var(--accent)", scale: 1.05 }
+                    : { scale: 1.05 }
+                }
+              >
+                {item}
+              </motion.span>
+
+              {/* نجمة فاصلة بتدور */}
+              <motion.span
+                animate={{ rotate: 360 }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                className="text-accent opacity-50 text-xl md:text-2xl"
+              >
+                ✦
+              </motion.span>
             </span>
-            <span className="text-accent opacity-50 text-sm">✦</span>
-          </span>
-        ))}
+          );
+        })}
       </motion.div>
     </div>
   );

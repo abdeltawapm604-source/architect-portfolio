@@ -1,18 +1,17 @@
 "use client";
 import { MouseEvent } from "react";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
-import Image from "next/image"; // 👈 استدعاء مكتبة الصور
+import Image from "next/image";
 import Reveal from "./Reveal";
 
 const PROJECTS = [
-  
   {
     id: "justbeans",
     tag: "Interactive Web",
     name: "Just Beans Coffee",
     desc: "An immersive e-commerce and brand platform featuring 3D tilt mechanics, cinematic parallax scrolling, and staggered reveal animations.",
     monogram: "JB",
-    image: "/beans.png", // 👈 ضفنا مسار الصورة هنا (غير الاسم لو صورتك اسمها مختلف)
+    image: "/beans.png", 
     color: "#E6D5B8", 
     bg: "linear-gradient(135deg, #0A0A0A, #171512)",
     tech: ["JavaScript", "CSS3D", "UI/UX Architecture"],
@@ -21,14 +20,14 @@ const PROJECTS = [
   {
     id: "coresystem",
     tag: "Enterprise App",
-    name: "Core System App", // تقدر تغير الاسم لاسم النظام الفعلي
+    name: "Core System App",
     desc: "A robust cross-platform application system engineered for enterprise management. Features real-time data sync, complex state management, and a seamless native user experience.",
     monogram: "SYS",
-    image: "/nizam.jpeg", // 👈 لو عندك صورة للنظام حطها في public وسميها system.jpg، ولو مفيش امسح السطر ده وهيعرض الحروف
-    color: "#64748B", // لون رمادي معدني فخم جداً (Slate)
-    bg: "linear-gradient(135deg, #0A0A0A, #10141a)", // خلفية ليلية كلاسيكية
+    image: "/nizam.jpeg", 
+    color: "#64748B",
+    bg: "linear-gradient(135deg, #0A0A0A, #10141a)",
     tech: ["Flutter", "Dart", "System Architecture"],
-    featured: false, // خليها false عشان يظهر كارت عادي، أو true لو عايزه ياخد عرض الشاشة كلها
+    featured: false,
   },
   {
     id: "mastery",
@@ -61,12 +60,13 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       onMouseMove={handleMouseMove}
+      // الكارت المميز بياخد مساحة كارتين على الكمبيوتر، وعمود واحد على الموبايل
       className={`group relative border border-border bg-[#0a0a0a]/40 backdrop-blur-sm overflow-hidden transition-all duration-700 hover:border-accent/40 ${
         project.featured ? "md:col-span-2 flex flex-col md:flex-row" : "flex flex-col"
       }`}
     >
       <motion.div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-20"
+        className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-20 hidden md:block" // مخفي عالموبايل عشان مفيش ماوس
         style={{
           background: useMotionTemplate`
             radial-gradient(
@@ -78,14 +78,13 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
         }}
       />
 
-      {/* منطقة العرض (Preview) */}
+      {/* منطقة العرض (Preview) - ارتفاع متجاوب للموبايل والكمبيوتر */}
       <div
         className={`relative overflow-hidden flex items-center justify-center border-border/30 ${
-          project.featured ? "md:w-1/2 md:border-r border-b md:border-b-0 h-64 md:h-auto" : "h-64 border-b"
+          project.featured ? "md:w-1/2 border-b md:border-b-0 md:border-r h-56 md:h-auto min-h-[250px]" : "h-56 md:h-64 border-b"
         }`}
         style={{ background: project.bg }}
       >
-        {/* لو في صورة، هنعرضها، لو مفيش هنعرض الحروف */}
         {project.image ? (
           <>
             <Image
@@ -98,7 +97,7 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
           </>
         ) : (
           <span
-            className="font-bebas text-[8rem] tracking-widest opacity-10 text-white transition-all duration-700 group-hover:scale-110 group-hover:opacity-30"
+            className="font-bebas text-[6rem] md:text-[8rem] tracking-widest opacity-10 text-white transition-all duration-700 group-hover:scale-110 group-hover:opacity-30"
             style={{ color: project.color }}
           >
             {project.monogram}
@@ -108,49 +107,50 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
         <div className="absolute inset-0 bg-gradient-to-t from-bg/90 via-bg/20 to-transparent opacity-80" />
       </div>
 
-      <div className={`p-8 md:p-10 flex flex-col justify-between relative z-10 ${project.featured ? "md:w-1/2" : ""}`}>
+      {/* تفاصيل المشروع */}
+      <div className={`p-6 md:p-10 flex flex-col justify-between relative z-10 flex-1 ${project.featured ? "md:w-1/2" : ""}`}>
         <div>
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-3 md:mb-4">
             <span 
-              className="font-mono text-[0.6rem] tracking-[0.2em] uppercase transition-colors duration-500 group-hover:text-white"
+              className="font-mono text-[0.55rem] md:text-[0.6rem] tracking-[0.2em] uppercase transition-colors duration-500 group-hover:text-white"
               style={{ color: project.color }}
             >
               {project.tag}
             </span>
-            <span className="font-mono text-[0.55rem] tracking-widest text-muted">
+            <span className="font-mono text-[0.5rem] md:text-[0.55rem] tracking-widest text-muted">
               PRJ-0{index + 1}
             </span>
           </div>
 
-          <h3 className="font-syne font-semibold text-2xl text-white mb-4 tracking-wide group-hover:text-accent2 transition-colors duration-300">
+          <h3 className="font-syne font-semibold text-xl md:text-2xl text-white mb-3 md:mb-4 tracking-wide group-hover:text-accent2 transition-colors duration-300">
             {project.name}
           </h3>
 
-          <p className="font-mono text-[0.7rem] text-muted leading-relaxed mb-8">
+          <p className="font-mono text-[0.65rem] md:text-[0.7rem] text-muted leading-relaxed mb-6 md:mb-8">
             {project.desc}
           </p>
         </div>
 
-        <div className="flex items-end justify-between border-t border-border/40 pt-6 mt-auto">
-          <div className="flex gap-2 flex-wrap max-w-[80%]">
+        <div className="flex items-end justify-between border-t border-border/40 pt-5 md:pt-6 mt-auto">
+          <div className="flex gap-2 flex-wrap max-w-[75%] md:max-w-[80%]">
             {project.tech.map((t) => (
               <span
                 key={t}
-                className="font-mono text-[0.55rem] tracking-widest uppercase px-3 py-1.5 bg-white/[0.02] border border-border text-muted transition-colors duration-300 group-hover:border-white/10 group-hover:text-white/70"
+                className="font-mono text-[0.5rem] md:text-[0.55rem] tracking-widest uppercase px-2 md:px-3 py-1 md:py-1.5 bg-white/[0.02] border border-border text-muted transition-colors duration-300 group-hover:border-white/10 group-hover:text-white/70"
               >
                 {t}
               </span>
             ))}
           </div>
 
-          <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted transition-all duration-500 group-hover:border-accent group-hover:text-accent overflow-hidden relative">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-border flex items-center justify-center text-muted transition-all duration-500 group-hover:border-accent group-hover:text-accent overflow-hidden relative flex-shrink-0">
             <motion.div
               className="absolute"
               initial={{ x: -20, opacity: 0 }}
               whileHover={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-3.5 md:h-3.5">
                 <path d="M5 12h14"></path>
                 <path d="M12 5l7 7-7 7"></path>
               </svg>
@@ -161,7 +161,7 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
               whileHover={{ x: 20, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-3.5 md:h-3.5">
                 <path d="M5 12h14"></path>
                 <path d="M12 5l7 7-7 7"></path>
               </svg>
@@ -175,16 +175,18 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
 
 export default function Projects() {
   return (
-    <section id="projects" className="relative py-32 px-16 bg-surface overflow-hidden border-b border-border">
+    <section id="projects" className="relative py-20 lg:py-32 px-6 md:px-12 lg:px-16 bg-surface overflow-hidden border-b border-border">
       <div className="absolute inset-0 bg-[radial-gradient(#2C2926_1px,transparent_1px)] [background-size:24px_24px] opacity-10" />
 
-      <Reveal className="flex items-center gap-5 mb-20 relative z-10">
-        <span className="font-mono text-[0.65rem] text-accent tracking-[0.3em]">03</span>
-        <div className="h-px w-24 bg-gradient-to-r from-accent/50 to-transparent" />
-        <h2 className="font-bebas text-5xl tracking-widest text-white">Featured Case Studies</h2>
+      {/* Header */}
+      <Reveal className="flex items-center gap-4 md:gap-5 mb-12 md:mb-20 relative z-10">
+        <span className="font-mono text-[0.6rem] md:text-[0.65rem] text-accent tracking-[0.3em]">03</span>
+        <div className="h-px w-16 md:w-24 bg-gradient-to-r from-accent/50 to-transparent" />
+        <h2 className="font-bebas text-4xl md:text-5xl tracking-widest text-white">Featured Case Studies</h2>
       </Reveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto relative z-10">
+      {/* Grid: عمود واحد للموبايل وعمودين للكمبيوتر */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-7xl mx-auto relative z-10">
         {PROJECTS.map((p, i) => (
           <ProjectCard key={p.id} project={p} index={i} />
         ))}
