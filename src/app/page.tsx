@@ -6,7 +6,6 @@ import TechStack from "@/components/TechStack";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import Marquee from "@/components/Marquee";
 
 export default function Home() {
   return (
@@ -14,7 +13,6 @@ export default function Home() {
       <Cursor />
       <Navbar />
       <Hero />
-      <Marquee />
       <About />
       <TechStack />
       <Projects />

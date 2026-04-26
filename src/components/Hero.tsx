@@ -6,11 +6,8 @@ import Image from "next/image";
 const TITLES = [
   "SOFTWARE ENGINEER",
   "WEB DEVELOPER",
-  "CEO @ MASTERY GROUP",
-  "CROSS-PLATFORM DEV",
 ];
 
-// 🧨 مكون الألعاب النارية الاحترافي 
 const FireworkText = ({ text, delay = 0, className = "" }: { text: string, delay?: number, className?: string }) => {
   const letters = Array.from(text);
 
@@ -144,15 +141,13 @@ export default function Hero() {
             </AnimatePresence>
           </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 8.5, duration: 0.7 }}
-            className="text-muted text-sm md:text-base leading-relaxed max-w-lg mb-10"
-          >
-            I build premium, high-performance web applications and digital experiences using cutting-edge technologies like React and Next.js. I turn complex logic into elegant, scalable architecture.
-          </motion.p>
-
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 8.5, duration: 0.7 }}
+              className="text-muted text-sm md:text-base leading-relaxed max-w-lg mb-10"
+             >  Software Engineering student and Web Development specialist, dedicated to building premium and scalable web applications. 
+            </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

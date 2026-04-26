@@ -3,69 +3,65 @@ import { motion } from "framer-motion";
 import Reveal from "./Reveal";
 
 const TECH = [
-  { name: "JavaScript", label: "JS", color: "#f7df1e", glow: "rgba(247,223,30,0.12)" },
-  { name: "React", label: "⚛", color: "#61dafb", glow: "rgba(97,218,251,0.12)" },
-  { name: "Node.js", label: "⬡", color: "#68a063", glow: "rgba(104,160,99,0.12)" },
-  { name: "Firebase", label: "🔥", color: "#ffca28", glow: "rgba(255,202,40,0.12)" },
-  { name: "TypeScript", label: "TS", color: "#3178c6", glow: "rgba(49,120,198,0.12)" },
-  { name: "Next.js", label: "▲", color: "#e8edf5", glow: "rgba(232,237,245,0.06)" },
-  { name: "Electron", label: "⚡", color: "#9feaf9", glow: "rgba(159,234,249,0.1)" },
+  { name: "JavaScript", label: "JS", color: "#f7df1e", glow: "rgba(247,223,30,0.08)" },
+  { name: "React", label: "⚛", color: "#61dafb", glow: "rgba(97,218,251,0.08)" },
+  { name: "TypeScript", label: "TS", color: "#3178c6", glow: "rgba(49,120,198,0.08)" },
+  { name: "Next.js", label: "▲", color: "#ffffff", glow: "rgba(255,255,255,0.04)" },
+  { name: "Tailwind", label: "TW", color: "#38bdf8", glow: "rgba(56,189,248,0.08)" },
+  { name: "CSS3", label: "#", color: "#264de4", glow: "rgba(38,77,228,0.08)" },
 ];
 
 export default function TechStack() {
   return (
-    <section id="tech" className="relative py-32 px-16 bg-bg overflow-hidden">
-      {/* Grid bg */}
-      <div className="absolute inset-0 grid-bg opacity-30" />
-
-      <Reveal className="flex items-center gap-5 mb-16 relative z-10">
-        <span className="font-mono text-[0.6rem] text-accent tracking-widest">02</span>
-        <div className="h-px w-16 bg-gradient-to-r from-border to-transparent" />
-        <h2 className="font-bebas text-5xl tracking-widest">My Tech Stack</h2>
+    <section id="tech" className="relative py-24 lg:py-40 px-6 md:px-12 lg:px-16 bg-surface overflow-hidden border-b border-border">
+      <div className="absolute inset-0 grid-bg opacity-20" />
+      
+      <Reveal className="flex items-center gap-6 mb-20 relative z-10">
+        <span className="font-mono text-[0.65rem] text-accent tracking-[0.4em] font-bold">02</span>
+        <div className="h-px w-20 bg-gradient-to-r from-accent/40 via-accent/10 to-transparent" />
+        <h2 className="font-bebas text-5xl md:text-6xl tracking-[0.15em] text-white">Tech Stack</h2>
       </Reveal>
 
-      <div className="grid grid-cols-4 gap-4 relative z-10 max-w-4xl">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 relative z-10 w-full max-w-7xl mx-auto">
         {TECH.map((tech, i) => (
           <motion.div
             key={tech.name}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -8, scale: 1.02 }}
-            className="group relative clip-sm border border-border bg-surface p-6 text-center cursor-default overflow-hidden"
-            style={{ "--glow": tech.glow } as React.CSSProperties}
+            transition={{ 
+              delay: i * 0.05, 
+              duration: 0.8, 
+              ease: [0.22, 1, 0.36, 1] 
+            }}
+            whileHover={{ y: -5 }}
+            className="group relative border border-border/50 bg-[#0c0c0c]/50 backdrop-blur-xl p-8 lg:p-10 flex flex-col items-center justify-center transition-all duration-500"
           >
-            {/* Hover glow */}
             <motion.div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              style={{ background: `radial-gradient(ellipse at center, ${tech.glow} 0%, transparent 70%)` }}
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+              style={{ background: `radial-gradient(circle at center, ${tech.glow} 0%, transparent 80%)` }}
             />
 
-            {/* Icon */}
             <div
-              className="font-bebas text-3xl mb-3 transition-all duration-300 group-hover:scale-110"
-              style={{ color: tech.color, filter: `drop-shadow(0 0 8px ${tech.color}60)` }}
+              className="font-bebas text-4xl mb-4 transition-transform duration-500 group-hover:scale-110 z-10"
+              style={{ 
+                color: tech.color, 
+                filter: `drop-shadow(0 0 12px ${tech.color}40)` 
+              }}
             >
               {tech.label}
             </div>
 
-            {/* Name */}
-            <div className="font-mono text-[0.6rem] tracking-widest uppercase text-muted group-hover:text-white transition-colors duration-300">
+            <div className="font-mono text-[0.6rem] md:text-[0.65rem] tracking-[0.2em] uppercase text-muted group-hover:text-white transition-colors duration-300 z-10">
               {tech.name}
             </div>
 
-            {/* Bottom dot */}
             <motion.div
-              className="mx-auto mt-3 w-1 h-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ background: tech.color }}
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-0 group-hover:w-1/2 transition-all duration-500"
+              style={{ background: `linear-gradient(90deg, transparent, ${tech.color}, transparent)` }}
             />
 
-            {/* Border glow on hover */}
-            <motion.div
-              className="absolute inset-0 clip-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              style={{ border: `1px solid ${tech.color}40` }}
-            />
+            <div className="absolute inset-0 border border-white/0 group-hover:border-white/5 transition-colors duration-500 pointer-events-none" />
           </motion.div>
         ))}
       </div>
