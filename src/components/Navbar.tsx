@@ -1,18 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+// استيراد أيقونة Home مع باقي الأيقونات
+import { Home, User, Code2, Briefcase, Mail } from "lucide-react";
 
+// ضفنا الـ Home في أول القائمة
 const links = [
-  { href: "#about", label: "About" },
-  { href: "#tech", label: "Stack" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
+  { href: "#hero", label: "Home", Icon: Home },
+  { href: "#about", label: "About", Icon: User },
+  { href: "#tech", label: "Stack", Icon: Code2 },
+  { href: "#projects", label: "Projects", Icon: Briefcase },
+  { href: "#contact", label: "Contact", Icon: Mail },
 ];
 
 export default function Navbar() {
+  const [active, setActive] = useState("#hero"); // خليت الـ Home هو النشط كبداية
+  const [hovered, setHovered] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("");
-  const [isOpen, setIsOpen] = useState(false); // للتحكم في منيو الموبايل
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -21,123 +25,105 @@ export default function Navbar() {
   }, []);
 
   return (
-    <motion.nav
-      // تأخير 7.5 ثانية عشان ينزل بعد الانفجار وشاشة القرآن والحديث
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, delay: 7.5, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 left-0 right-0 z-[900] px-6 md:px-12 lg:px-16 py-5 flex items-center justify-between transition-all duration-500 ${
-        scrolled || isOpen
-          ? "bg-bg/90 backdrop-blur-xl border-b border-border/50"
-          : "bg-transparent"
-      }`}
-    >
-      {/* Logo */}
-      <motion.a
-        href="#"
-        className="font-bebas text-2xl md:text-3xl tracking-widest text-white relative z-50"
-        whileHover={{ scale: 1.05 }}
+    <>
+      {/* =========================================
+          1. الجزء العلوي (اللوجو وحالة العمل) 
+          ========================================= */}
+      <motion.header
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 7.5, ease: [0.16, 1, 0.3, 1] }}
+        className={`fixed top-0 left-0 right-0 z-[900] px-6 md:px-12 lg:px-16 py-5 flex items-center justify-between transition-all duration-500 pointer-events-none ${
+          scrolled ? "bg-[#030303]/40 backdrop-blur-xl border-b border-white/5" : "bg-transparent"
+        }`}
       >
-        AT<span className="text-accent">.</span>
-      </motion.a>
+        <motion.a
+          href="#"
+          className="font-bebas text-2xl md:text-3xl tracking-widest text-white relative z-50 pointer-events-auto"
+          whileHover={{ scale: 1.05 }}
+        >
+          AT<span className="text-cyan-400">.</span>
+        </motion.a>
 
-      {/* Desktop Links (مخفية عالموبايل) */}
-      <ul className="hidden md:flex gap-10">
-        {links.map((l, i) => (
-          <motion.li
-            key={l.href}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            // التأخير هنا كمان متظبط بعد 7 ثواني
-            transition={{ delay: 7.5 + (0.1 * i) }}
-          >
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 8.3 }}
+          className="flex items-center gap-2 font-mono text-[0.6rem] md:text-[0.65rem] tracking-wider text-emerald-400 border border-emerald-400/20 px-3 py-1.5 bg-emerald-400/5 backdrop-blur-sm pointer-events-auto shadow-[0_0_15px_rgba(52,211,153,0.1)] rounded-md"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+          <span className="hidden sm:inline">Available for Work</span>
+          <span className="sm:hidden">Available</span>
+        </motion.div>
+      </motion.header>
+
+      {/* =========================================
+          2. شريط الأيقونات السفلي (بعرض الشاشة ومسافات متناسقة)
+          ========================================= */}
+      <motion.nav
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 7.8, ease: "backOut" }}
+        className="fixed bottom-0 left-0 right-0 w-full z-[950] flex items-center justify-center gap-8 sm:gap-16 md:gap-28 pb-[19px] pt-10 bg-gradient-to-t from-[#030303]/60 to-transparent pointer-events-none"
+        onMouseLeave={() => setHovered(null)}
+      >
+        {links.map((l) => {
+          const isActive = active === l.href;
+          const isHovered = hovered === l.href;
+
+          return (
             <a
+              key={l.href}
               href={l.href}
               onClick={() => setActive(l.href)}
-              className="relative font-mono text-[0.65rem] tracking-widest uppercase text-muted hover:text-white transition-colors duration-300 group"
+              onMouseEnter={() => setHovered(l.href)}
+              className="relative group block pointer-events-auto"
             >
-              {l.label}
-              <motion.span
-                className="absolute -bottom-1 left-0 h-px bg-accent"
-                initial={{ width: 0 }}
-                animate={{ width: active === l.href ? "100%" : 0 }}
-                whileHover={{ width: "100%" }}
-                transition={{ duration: 0.3 }}
-              />
-            </a>
-          </motion.li>
-        ))}
-      </ul>
-
-      {/* Status badge (الكمبيوتر بس) */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 8.3 }}
-        className="hidden lg:flex items-center gap-2 font-mono text-[0.6rem] tracking-wider text-emerald-400 border border-emerald-400/20 px-3 py-1.5 bg-emerald-400/5"
-      >
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        Available
-      </motion.div>
-
-      {/* Mobile Menu Button (الموبايل بس) */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 7.5 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden relative z-50 p-2 text-white flex flex-col gap-1.5"
-      >
-        <motion.span 
-          animate={isOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }} 
-          className="w-6 h-px bg-white block transition-all"
-        />
-        <motion.span 
-          animate={isOpen ? { opacity: 0 } : { opacity: 1 }} 
-          className="w-6 h-px bg-white block transition-all"
-        />
-        <motion.span 
-          animate={isOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }} 
-          className="w-6 h-px bg-white block transition-all"
-        />
-      </motion.button>
-
-      {/* Mobile Menu Dropdown */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="absolute top-full left-0 right-0 bg-bg/95 backdrop-blur-xl border-b border-border/50 py-8 px-6 flex flex-col gap-6 md:hidden shadow-2xl"
-          >
-            {links.map((l, i) => (
-              <motion.a
-                key={l.href}
-                href={l.href}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.1 }}
-                onClick={() => {
-                  setActive(l.href);
-                  setIsOpen(false); // يقفل المنيو لما يدوس
-                }}
-                className="font-bebas text-3xl tracking-widest text-muted hover:text-accent transition-colors duration-300 border-b border-border/30 pb-4"
+              {/* حاوية الأيقونة مع خلفية زجاجية ثابتة للزرار نفسه */}
+              <div 
+                className={`relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full z-10 transition-all duration-300 hover:scale-110 ${
+                  isActive 
+                    ? "bg-gradient-to-b from-cyan-500/20 to-blue-600/10 backdrop-blur-md border border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.2)]" 
+                    : "bg-white/5 backdrop-blur-md border border-white/5 hover:bg-white/10"
+                }`}
               >
-                {l.label}
-              </motion.a>
-            ))}
-            
-            {/* Status badge in mobile menu */}
-            <div className="flex items-center gap-3 mt-4 font-mono text-[0.65rem] tracking-wider text-emerald-400 border border-emerald-400/20 px-4 py-3 bg-emerald-400/5 w-fit">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Available for Work
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                {/* الأيقونة */}
+                <l.Icon 
+                  size={isActive ? 24 : 22} 
+                  strokeWidth={isActive ? 2.5 : 2}
+                  className={`relative z-20 transition-colors duration-300 ${
+                    isActive ? "text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" : "text-slate-400 group-hover:text-white drop-shadow-md"
+                  }`} 
+                />
 
-    </motion.nav>
+                {/* مؤشر خطي نيون تحت القسم النشط (اختياري بس بيدي شكل حلو) */}
+                {isActive && (
+                  <motion.div
+                    layoutId="active-indicator"
+                    className="absolute -bottom-2 w-6 h-[3px] bg-cyan-400 rounded-full shadow-[0_0_12px_#22d3ee] z-20"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </div>
+
+              {/* Tooltip */}
+              <AnimatePresence>
+                {isHovered && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 5, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#111]/90 backdrop-blur-md border border-white/10 rounded font-mono text-[0.65rem] tracking-widest uppercase text-slate-200 pointer-events-none shadow-xl whitespace-nowrap z-50"
+                  >
+                    {l.label}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </a>
+          );
+        })}
+      </motion.nav>
+    </>
   );
 }
