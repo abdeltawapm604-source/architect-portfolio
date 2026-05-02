@@ -171,7 +171,7 @@ function ScanTitle({ hex }: { hex: string }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: EASE }}
         className="font-black leading-[0.85] tracking-tight uppercase text-white"
-        style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
+        style={{ fontSize: "clamp(2rem, 6vw, 5rem)" }}
       >
         SYSTEMS
       </motion.h2>
@@ -181,7 +181,7 @@ function ScanTitle({ hex }: { hex: string }) {
         transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
         className="font-black leading-[0.85] tracking-tight uppercase"
         style={{
-          fontSize: "clamp(2.5rem, 6vw, 5rem)",
+          fontSize: "clamp(2rem, 6vw, 5rem)",
           color: "transparent",
           WebkitTextStroke: `1.5px ${hex}`,
           transition: "-webkit-text-stroke-color 0.5s",
@@ -211,7 +211,7 @@ function Counter({ value, color }: { value: number; color: string }) {
   }, [value]);
 
   return (
-    <span className="font-black text-[3.5rem] tracking-tighter" style={{ color, lineHeight: 0.9 }}>
+    <span className="font-black text-[2.5rem] md:text-[3.5rem] tracking-tighter" style={{ color, lineHeight: 0.9 }}>
       {String(display).padStart(2, "0")}
     </span>
   );
@@ -226,7 +226,8 @@ function FeaturedCard({ project }: { project: Project }) {
   const ref  = useRef<HTMLDivElement>(null);
 
   const onMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    // إيقاف الـ 3D Hover في الموبايل للحفاظ على الأداء
+    if (!ref.current || window.innerWidth < 1024) return;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     rotX.set(((e.clientY - top)  / height - 0.5) * -10);
     rotY.set(((e.clientX - left) / width  - 0.5) *  10);
@@ -247,17 +248,17 @@ function FeaturedCard({ project }: { project: Project }) {
         transformStyle: "preserve-3d",
         perspective: 1200,
       }}
-      className="group relative w-full h-full rounded-[2rem] overflow-hidden cursor-pointer select-none border border-white/5 bg-[#070707]"
+      className="group relative w-full h-full rounded-3xl md:rounded-[2rem] overflow-hidden cursor-pointer select-none border border-white/5 bg-[#070707]"
     >
       <motion.div
-        className="absolute inset-0 rounded-[2rem] pointer-events-none z-30"
+        className="absolute inset-0 rounded-3xl md:rounded-[2rem] pointer-events-none z-30 hidden md:block"
         animate={{ boxShadow: `inset 0 0 0 1px rgba(${pal.rgb},0.15), 0 0 80px -20px rgba(${pal.rgb},0.3)` }}
         transition={{ duration: 0.5 }}
       />
 
       <div className="absolute inset-0 flex items-center justify-center">
         {project.image && (
-          <div className="absolute inset-0 p-8 pb-32 md:p-12 md:pb-40 pointer-events-none">
+          <div className="absolute inset-0 p-6 pb-28 md:p-12 md:pb-40 pointer-events-none">
             <div className="relative w-full h-full">
               <Image
                 src={project.image}
@@ -269,37 +270,37 @@ function FeaturedCard({ project }: { project: Project }) {
             </div>
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#020202] via-[#020202]/90 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-[70%] md:h-[60%] bg-gradient-to-t from-[#020202] via-[#020202]/95 to-transparent z-10 pointer-events-none" />
       </div>
 
       {project.link && (
         <Link href={project.link} target="_blank" className="absolute inset-0 z-40" aria-label={`Visit ${project.name}`} />
       )}
 
-      <div className="absolute inset-x-0 bottom-0 z-50 px-8 pb-10 flex flex-col gap-4 pointer-events-none">
+      <div className="absolute inset-x-0 bottom-0 z-50 px-6 pb-6 md:px-8 md:pb-10 flex flex-col gap-3 md:gap-4 pointer-events-none">
         <div className="flex items-center justify-between">
           <motion.span
             animate={{ color: pal.hex, borderColor: `${pal.hex}40`, background: `${pal.hex}10` }}
-            className="px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.25em] uppercase"
+            className="px-3 py-1.5 md:px-4 md:py-2 rounded-full border text-[9px] md:text-[11px] font-bold tracking-[0.25em] uppercase"
           >
             {project.tag}
           </motion.span>
-          <span className="text-[12px] font-medium tracking-[0.3em] text-white/40 uppercase">{project.year}</span>
+          <span className="text-[10px] md:text-[12px] font-medium tracking-[0.3em] text-white/40 uppercase">{project.year}</span>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pointer-events-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 pointer-events-auto">
           <div className="max-w-xl">
-            <h3 className="text-white leading-tight tracking-tight font-black" style={{ fontSize: "clamp(2.5rem, 5vw, 3.5rem)" }}>
+            <h3 className="text-white leading-tight tracking-tight font-black" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
               {project.name}
             </h3>
-            <p className="text-[14px] text-white/50 leading-relaxed mt-3 font-medium max-w-md">
+            <p className="text-[13px] md:text-[14px] text-white/60 leading-relaxed mt-2 md:mt-3 font-medium max-w-md line-clamp-2 md:line-clamp-none">
               {project.desc}
             </p>
           </div>
 
           <motion.div
             whileHover={{ scale: 1.05, backgroundColor: pal.hex, color: "#000" }}
-            className="flex items-center gap-2 px-7 py-3.5 rounded-2xl border font-bold text-[12px] tracking-widest uppercase transition-colors shrink-0"
+            className="flex items-center justify-center gap-2 px-6 py-3 md:px-7 md:py-3.5 rounded-xl md:rounded-2xl border font-bold text-[11px] md:text-[12px] tracking-widest uppercase transition-colors shrink-0 w-full md:w-auto"
             animate={{ borderColor: `${pal.hex}60`, color: pal.hex }}
           >
             <ExternalLink size={14} />
@@ -345,7 +346,8 @@ function ThumbCard({
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="group relative w-full text-left overflow-hidden rounded-2xl transition-all duration-500 shrink-0"
+      // في الموبايل: عرض ثابت ويقف في النص لما تسحب (snap-center). في الديسكتوب: عرض كامل.
+      className="group relative text-left overflow-hidden rounded-2xl transition-all duration-500 shrink-0 snap-center w-[80vw] sm:w-[300px] lg:w-full"
       style={{
         height: 115,
         background: isActive ? `rgba(${pal.rgb},0.12)` : "rgba(10,10,10,0.4)",
@@ -378,19 +380,19 @@ function ThumbCard({
         />
       )}
 
-      <div className="relative z-10 h-full flex flex-col justify-center px-7 gap-1.5">
-        <span className="text-[10px] font-black tracking-[0.3em] uppercase opacity-60"
+      <div className="relative z-10 h-full flex flex-col justify-center px-6 lg:px-7 gap-1.5">
+        <span className="text-[9px] lg:text-[10px] font-black tracking-[0.3em] uppercase opacity-60"
           style={{ color: isActive ? pal.hex : "#888" }}>
           {project.tag}
         </span>
-        <span className="text-[17px] font-black tracking-tight transition-colors duration-300"
+        <span className="text-[15px] lg:text-[17px] font-black tracking-tight transition-colors duration-300"
           style={{ color: isActive ? "#fff" : "#555" }}>
           {project.name}
         </span>
       </div>
 
       <motion.div
-        className="absolute right-6 bottom-1/2 translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all"
+        className="absolute right-5 lg:right-6 bottom-1/2 translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all hidden lg:block"
         animate={{ x: isActive ? 0 : 10 }}
       >
         <ArrowRight size={18} style={{ color: pal.hex }} />
@@ -406,7 +408,7 @@ function FilterPill({ cat, active, onClick }: { cat: string; active: boolean; on
       onClick={onClick}
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.95 }}
-      className="relative font-bold text-[10px] tracking-[0.2em] uppercase px-5 py-2.5 rounded-full border transition-all duration-300"
+      className="relative font-bold text-[9px] md:text-[10px] tracking-[0.2em] uppercase px-4 py-2 md:px-5 md:py-2.5 rounded-full border transition-all duration-300 whitespace-nowrap shrink-0 snap-start"
       style={{
         borderColor: active ? `${pal.hex}60` : "rgba(255,255,255,0.08)",
         color: active ? "#fff" : "#666",
@@ -459,52 +461,55 @@ export default function ProjectsSection() {
     <section
       ref={sectionRef}
       id="projects"
-      className="relative w-full bg-[#020202] overflow-hidden flex flex-col justify-center min-h-screen py-16 md:py-24"
+      className="relative w-full bg-[#020202] overflow-hidden flex flex-col justify-center min-h-screen py-12 md:py-24"
       style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}
     >
       <AuroraBg hue={pal.h} />
       <canvas ref={canvasRef} className="absolute inset-0 z-[5] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 md:px-16 flex flex-col h-full gap-8 lg:gap-10">
+      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-5 md:px-16 flex flex-col h-full gap-6 md:gap-10">
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 shrink-0">
-          <div className="flex flex-col gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 shrink-0">
+          <div className="flex flex-col gap-2 md:gap-4">
             <motion.div className="flex items-center gap-3">
               <Terminal size={14} style={{ color: pal.hex }} />
-              <span className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-50">
+              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] uppercase opacity-50">
                 /root/projects/featured
               </span>
             </motion.div>
 
             <ScanTitle hex={pal.hex} />
             
-            <p className="text-[15px] text-white/40 font-medium tracking-wide max-w-md leading-relaxed mt-2">
+            <p className="text-[13px] md:text-[15px] text-white/40 font-medium tracking-wide max-w-sm md:max-w-md leading-relaxed mt-1 md:mt-2">
               Architecting robust backend systems and scalable digital infrastructure for high-performance environments.
             </p>
           </div>
 
-          <div className="flex items-baseline gap-3">
+          <div className="flex items-baseline gap-2 md:gap-3">
             <motion.div animate={{ color: pal.hex }}>
               <Counter value={filtered.length} color={pal.hex} />
             </motion.div>
-            <span className="text-[12px] font-black tracking-[0.4em] text-white/20 uppercase">Units</span>
+            <span className="text-[10px] md:text-[12px] font-black tracking-[0.4em] text-white/20 uppercase">Units</span>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2.5 shrink-0">
+        {/* شريط الفلاتر: قابل للسحب أفقياً في الموبايل (Swipeable Categories) */}
+        <div className="flex overflow-x-auto lg:flex-wrap gap-2.5 shrink-0 pb-2 -mx-5 px-5 md:mx-0 md:px-0 no-scrollbar snap-x">
           {CATEGORIES.map((cat) => (
             <FilterPill key={cat} cat={cat} active={filter === cat} onClick={() => setFilter(cat)} />
           ))}
         </div>
 
-        <motion.div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 flex-1 min-h-[550px] lg:min-h-[650px]">
-          <div className="relative w-full h-full">
+        {/* تقسيم الموبايل: الكارت الرئيسي فوق، وتحته شريط أفقي للمشاريع. في الديسكتوب: Grid جنب بعض */}
+        <motion.div className="flex flex-col lg:grid lg:grid-cols-[1fr_340px] gap-4 md:gap-6 flex-1 min-h-[500px] lg:min-h-[650px]">
+          <div className="relative w-full h-[400px] sm:h-[450px] lg:h-full shrink-0 lg:shrink">
             <AnimatePresence mode="wait">
               <FeaturedCard key={featured.id} project={featured} />
             </AnimatePresence>
           </div>
 
-          <div className="flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar h-full max-h-[650px]">
+          {/* شريط المشاريع: أفقي في الموبايل، وعمودي في الديسكتوب */}
+          <div className="flex flex-row lg:flex-col gap-3 overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto pb-4 lg:pb-0 lg:pr-2 no-scrollbar-mobile custom-scrollbar snap-x snap-mandatory w-full h-auto lg:h-full lg:max-h-[650px]">
             <AnimatePresence>
               {filtered.map((p, i) => (
                 <ThumbCard
@@ -521,7 +526,7 @@ export default function ProjectsSection() {
           </div>
         </motion.div>
 
-        <div className="flex items-center justify-between border-t border-white/5 pt-6 shrink-0 mt-4">
+        <div className="hidden lg:flex items-center justify-between border-t border-white/5 pt-6 shrink-0 mt-4">
           <div className="flex gap-2">
             {filtered.map((p) => (
               <div
@@ -540,10 +545,19 @@ export default function ProjectsSection() {
         </div>
       </div>
 
+      {/* أخفينا الـ Scrollbar القبيح بتاع المتصفحات في الموبايل */}
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @media (max-width: 1024px) {
+          .no-scrollbar-mobile::-webkit-scrollbar { display: none; }
+          .no-scrollbar-mobile { -ms-overflow-style: none; scrollbar-width: none; }
+        }
       `}</style>
     </section>
   );
