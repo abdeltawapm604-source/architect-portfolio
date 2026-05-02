@@ -1,10 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-// استيراد أيقونة Home مع باقي الأيقونات
 import { Home, User, Code2, Briefcase, Mail } from "lucide-react";
 
-// ضفنا الـ Home في أول القائمة
 const links = [
   { href: "#hero", label: "Home", Icon: Home },
   { href: "#about", label: "About", Icon: User },
@@ -14,7 +12,7 @@ const links = [
 ];
 
 export default function Navbar() {
-  const [active, setActive] = useState("#hero"); // خليت الـ Home هو النشط كبداية
+  const [active, setActive] = useState("#hero"); 
   const [hovered, setHovered] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
@@ -26,9 +24,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* =========================================
-          1. الجزء العلوي (اللوجو وحالة العمل) 
-          ========================================= */}
+      {}
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -52,14 +48,12 @@ export default function Navbar() {
           className="flex items-center gap-2 font-mono text-[0.6rem] md:text-[0.65rem] tracking-wider text-emerald-400 border border-emerald-400/20 px-3 py-1.5 bg-emerald-400/5 backdrop-blur-sm pointer-events-auto shadow-[0_0_15px_rgba(52,211,153,0.1)] rounded-md"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-          <span className="hidden sm:inline">Available for Work</span>
-          <span className="sm:hidden">Available</span>
+          <span className="hidden sm:inline"></span>
+          <span className="sm:hidden">AT</span>
         </motion.div>
       </motion.header>
 
-      {/* =========================================
-          2. شريط الأيقونات السفلي (بعرض الشاشة ومسافات متناسقة)
-          ========================================= */}
+      {}
       <motion.nav
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -79,7 +73,7 @@ export default function Navbar() {
               onMouseEnter={() => setHovered(l.href)}
               className="relative group block pointer-events-auto"
             >
-              {/* حاوية الأيقونة مع خلفية زجاجية ثابتة للزرار نفسه */}
+              {}
               <div 
                 className={`relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full z-10 transition-all duration-300 hover:scale-110 ${
                   isActive 
@@ -87,7 +81,7 @@ export default function Navbar() {
                     : "bg-white/5 backdrop-blur-md border border-white/5 hover:bg-white/10"
                 }`}
               >
-                {/* الأيقونة */}
+                {}
                 <l.Icon 
                   size={isActive ? 24 : 22} 
                   strokeWidth={isActive ? 2.5 : 2}
@@ -96,7 +90,7 @@ export default function Navbar() {
                   }`} 
                 />
 
-                {/* مؤشر خطي نيون تحت القسم النشط (اختياري بس بيدي شكل حلو) */}
+                {}
                 {isActive && (
                   <motion.div
                     layoutId="active-indicator"

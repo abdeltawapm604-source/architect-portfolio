@@ -11,7 +11,7 @@ const REPORT = [
   { id: "04", title: "Software Engineering", desc: "Applying academic principles to build scalable and clean codebases." },
 ];
 
-const TAGS = ["Next.js", "React.js", "Tailwind CSS", "JavaScript", "HTML5/CSS3", "Frontend Architecture"];
+const TAGS = ["Next.js", "React.js", "Tailwind CSS", "JavaScript", "HTML5/CSS3","Git/GitHub", "Frontend Architecture"];
 
 export default function About() {
   const ref = useRef(null);
@@ -52,7 +52,7 @@ export default function About() {
           
           <Reveal delay={0.2}>
             <p className="text-muted text-base md:text-lg leading-relaxed mb-6 font-syne">
-              My focus lies in mastering the art of the frontend—using <strong className="text-white font-medium">Next.js</strong> and <strong className="text-white font-medium">Tailwind CSS</strong> to bridge the gap between complex logic and elegant user interfaces.
+              My focus lies in mastering the art of the frontend—using <strong className="text-white font-medium">Next.js, React</strong> and <strong className="text-white font-medium">Tailwind CSS</strong> to bridge the gap between complex logic and elegant user interfaces.
             </p>
           </Reveal>
           

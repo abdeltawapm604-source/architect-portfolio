@@ -1,24 +1,28 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function Cursor() {
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
 
-  const springX = useSpring(mouseX, { stiffness: 500, damping: 30 });
-  const springY = useSpring(mouseY, { stiffness: 500, damping: 30 });
-
-  const trailX = useSpring(mouseX, { stiffness: 100, damping: 20 });
-  const trailY = useSpring(mouseY, { stiffness: 100, damping: 20 });
+  const trailX = useSpring(mouseX, { stiffness: 1000, damping: 40 });
+  const trailY = useSpring(mouseY, { stiffness: 1000, damping: 40 });
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+      return;
+    }
+
     const move = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
+      if (!isVisible) setIsVisible(true);
     };
 
     const handleOver = (e: MouseEvent) => {
@@ -27,56 +31,66 @@ export default function Cursor() {
         !!(
           t.closest("a") ||
           t.closest("button") ||
-          t.closest("[data-cursor]")
+          t.closest("[data-cursor]") ||
+          window.getComputedStyle(t).cursor === "pointer"
         )
       );
     };
 
     const down = () => setClicked(true);
     const up = () => setClicked(false);
+    
+    const leave = () => setIsVisible(false);
+    const enter = () => setIsVisible(true);
 
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseover", handleOver);
     window.addEventListener("mousedown", down);
     window.addEventListener("mouseup", up);
+    document.addEventListener("mouseleave", leave);
+    document.addEventListener("mouseenter", enter);
+
     return () => {
       window.removeEventListener("mousemove", move);
       window.removeEventListener("mouseover", handleOver);
       window.removeEventListener("mousedown", down);
       window.removeEventListener("mouseup", up);
+      document.removeEventListener("mouseleave", leave);
+      document.removeEventListener("mouseenter", enter);
     };
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isVisible]);
+
+  if (!isVisible) return null;
 
   return (
     <>
-      {/* Dot */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-screen"
-        style={{ x: springX, y: springY, translateX: "-50%", translateY: "-50%" }}
+        className="fixed top-0 left-0 pointer-events-none z-[9999]"
+        style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }}
       >
         <motion.div
-          className="rounded-full bg-accent"
+          className="rounded-full bg-cyan-400"
+          style={{ boxShadow: "0 0 10px rgba(34, 211, 238, 0.4)" }}
           animate={{
-            width: clicked ? 6 : hovered ? 20 : 10,
-            height: clicked ? 6 : hovered ? 20 : 10,
+            width: clicked ? 4 : hovered ? 12 : 6,
+            height: clicked ? 4 : hovered ? 12 : 6,
           }}
-          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
         />
       </motion.div>
 
-      {/* Ring */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9998]"
         style={{ x: trailX, y: trailY, translateX: "-50%", translateY: "-50%" }}
       >
         <motion.div
-          className="rounded-full border border-accent/40"
+          className="rounded-full border border-cyan-400/50"
           animate={{
-            width: clicked ? 20 : hovered ? 56 : 36,
-            height: clicked ? 20 : hovered ? 56 : 36,
-            opacity: hovered ? 1 : 0.6,
+            width: clicked ? 20 : hovered ? 44 : 28,
+            height: clicked ? 20 : hovered ? 44 : 28,
+            opacity: clicked ? 0.8 : hovered ? 1 : 0.4,
           }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
         />
       </motion.div>
     </>

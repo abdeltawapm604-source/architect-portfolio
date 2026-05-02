@@ -1,99 +1,71 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+
+import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 import Image from "next/image";
 
-const TITLES = ["SOFTWARE ENGINEER", "WEB DEVELOPER", "FRONT-END EXPERT"];
+const TITLES = ["FRONT-END DEVELOPER", "REACT.JS EXPERT", "WEB UI/UX ENGINEER", "CREATIVE DEVELOPER"];
+const NAME_1  = "ABDELTAWAP";
+const NAME_2  = "MOHAMED";
+const DELAY   = 1.5;
 
-const prng = (seed: number) => {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-};
+const prng = (seed: number) => { const x = Math.sin(seed + 1) * 10000; return x - Math.floor(x); };
 
-const LivingBackground = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {Array.from({ length: 50 }).map((_, i) => (
-        <motion.div
-          key={`star-${i}`}
-          className="absolute w-[2px] h-[2px] bg-blue-300/50 rounded-full shadow-[0_0_8px_#93C5FD]"
-          style={{
-            left: `${prng(i) * 100}%`,
-            top: `${prng(i + 100) * 100}%`,
-          }}
-          animate={{
-            y: [0, -800],
-            opacity: [0, Math.random() * 1, 0],
-            scale: [0, Math.random() * 3 + 1, 0],
-          }}
-          transition={{
-            duration: Math.random() * 12 + 8,
-            repeat: Infinity,
-            ease: "linear",
-            delay: Math.random() * 5,
-          }}
-        />
-      ))}
-    </div>
-  );
-};
+const BG_PARTICLES = Array.from({ length: 30 }, (_, i) => ({
+  left:  `${prng(i) * 100}%`,
+  top:   `${prng(i + 100) * 100}%`,
+  dur:   prng(i + 200) * 15 + 10,
+  del:   prng(i + 300) * 5,
+  isBlue: prng(i + 400) > 0.5,
+  maxOp: prng(i + 500) * 0.4 + 0.1,
+}));
 
-const MegaExplosion = ({ delay, scaleMult = 1 }: { delay: number, scaleMult?: number }) => {
-  return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 flex justify-center items-center">
+const AmbientField = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+    {BG_PARTICLES.map((p, i) => (
       <motion.div
-        className="absolute w-8 h-8 md:w-16 md:h-16 bg-white rounded-full mix-blend-screen shadow-[0_0_150px_#ffffff]"
-        initial={{ scale: 0, opacity: 1 }}
-        animate={{ scale: [0, 20 * scaleMult, 0], opacity: [1, 1, 0] }}
-        transition={{ delay, duration: 0.5, ease: "circOut" }}
+        key={i}
+        className="absolute rounded-full"
+        style={{
+          left: p.left, top: p.top,
+          width: 2, height: 2,
+          background: p.isBlue ? "rgba(147,197,253,0.3)" : "rgba(34,211,238,0.2)",
+          boxShadow: p.isBlue ? "0 0 8px #93C5FD" : "0 0 8px #22d3ee",
+        }}
+        animate={{ y: [0, -300], opacity: [0, p.maxOp, 0] }}
+        transition={{ duration: p.dur, repeat: Infinity, ease: "linear", delay: p.del }}
       />
-      {Array.from({ length: 12 }).map((_, i) => {
-        const angle = (i * 30) * (Math.PI / 180);
-        const distance = 150 * scaleMult + Math.random() * 100;
-        return (
-          <motion.div
-            key={`spark-${i}`}
-            className="absolute w-[2px] h-[10px] md:w-[4px] md:h-[20px] bg-white rounded-full shadow-[0_0_15px_#fff]"
-            style={{ rotate: `${i * 30 + 90}deg` }}
-            initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
-            animate={{
-              x: Math.cos(angle) * distance,
-              y: Math.sin(angle) * distance,
-              scale: [0, 1.2, 0],
-              opacity: [1, 1, 0],
-            }}
-            transition={{ delay, duration: 0.6, ease: "easeOut" }}
-          />
-        );
-      })}
-    </div>
-  );
-};
+    ))}
+  </div>
+);
 
-const GPUAcceleratedLetter = ({ char, globalIndex, endColor }: { char: string, globalIndex: number, endColor: string }) => {
-  const r1 = prng(globalIndex * 1.1 + 1);
-  const r2 = prng(globalIndex * 2.2 + 2);
-  const explodeX = (r1 - 0.5) * 2000; 
-  const explodeY = (r2 - 0.5) * 2000;
-  const rotZ = (r1 - 0.5) * 1000;
-
+const AnimLetter = ({
+  char, idx, endColor,
+}: {
+  char: string; idx: number; endColor: string;
+}) => {
   return (
     <motion.span
-      className="inline-block relative z-50 origin-center will-change-transform"
-      initial={{ opacity: 0, x: 0, y: 0, scale: 0, rotate: 0 }}
+      className="inline-block origin-bottom will-change-transform"
+      initial={{ opacity: 0, y: 30, rotateX: -40, filter: "blur(8px)" }}
       animate={{
-        opacity: [0, 1, 1, 1, 1],
-        x: [0, explodeX, (r1 - 0.5) * 200, 0],
-        y: [0, explodeY, (r2 - 0.5) * 200, 0],
-        rotate: [0, rotZ, rotZ / 10, 0],
-        scale: [0, 6, 2, 1], 
-        color: ["#ffffff", "#93C5FD", "#3b82f6", endColor],
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        filter: "blur(0px)",
+        color: ["#ffffff", endColor],
       }}
       transition={{
-        duration: 4, 
-        times: [0, 0.1, 0.6, 1], 
-        ease: "easeOut", 
-        delay: 2 + (globalIndex * 0.02) 
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1], 
+        delay: DELAY + idx * 0.04, 
       }}
     >
       {char === " " ? "\u00A0" : char}
@@ -101,177 +73,269 @@ const GPUAcceleratedLetter = ({ char, globalIndex, endColor }: { char: string, g
   );
 };
 
-const GlowingText = ({ text, startIndex = 0, className = "", endColor = "#ffffff" }: { text: string, startIndex?: number, className?: string, endColor?: string }) => {
-  const letters = Array.from(text);
-  return (
-    <div className={`relative inline-flex flex-wrap ${className}`}>
-      <span className="relative z-10 flex">
-        {letters.map((char, index) => (
-          <GPUAcceleratedLetter key={index} char={char} globalIndex={startIndex + index} endColor={endColor} />
-        ))}
-      </span>
-    </div>
-  );
-};
+const GlowRow = ({
+  text, startIdx, endColor, className, style,
+}: {
+  text: string; startIdx: number; endColor: string; className?: string; style?: React.CSSProperties;
+}) => (
+  <span className={`inline-flex overflow-hidden pb-2 ${className ?? ""}`} style={style}>
+    {Array.from(text).map((ch, i) => (
+      <AnimLetter key={i} char={ch} idx={startIdx + i} endColor={endColor} />
+    ))}
+  </span>
+);
+
+const Flash = ({ delay }: { delay: number }) => (
+  <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+    <motion.div
+      className="absolute bg-blue-400 rounded-full mix-blend-screen filter blur-3xl"
+      style={{ width: 100, height: 100 }}
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: [0, 6, 0], opacity: [0, 0.5, 0] }}
+      transition={{ delay, duration: 1, ease: "easeInOut" }}
+    />
+  </div>
+);
 
 export default function Hero() {
-  const ref = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [titleIdx, setTitleIdx] = useState(0);
+
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springConfig = { damping: 25, stiffness: 150 };
-  const springX = useSpring(mouseX, springConfig);
-  const springY = useSpring(mouseY, springConfig);
+  const cfg    = { damping: 30, stiffness: 100 };
+  const sX     = useSpring(mouseX, cfg);
+  const sY     = useSpring(mouseY, cfg);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const x = (clientX / (typeof window !== 'undefined' ? window.innerWidth : 1000) - 0.5) * 20;
-    const y = (clientY / (typeof window !== 'undefined' ? window.innerHeight : 1000) - 0.5) * 20;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    mouseX.set((e.clientX / window.innerWidth  - 0.5) * 15);
+    mouseY.set((e.clientY / window.innerHeight - 0.5) * 15);
+  }, [mouseX, mouseY]);
 
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const scrollYTransform = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  
-  const [titleIdx, setTitleIdx] = useState(0);
-  const delayOffset = 6; 
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const scrollY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      const t = setInterval(() => setTitleIdx((i) => (i + 1) % TITLES.length), 3500);
-      return () => clearInterval(t);
-    }, (delayOffset + 1) * 1000);
-    return () => clearTimeout(timeout);
+    const t = setTimeout(() => {
+      const iv = setInterval(() => setTitleIdx((i) => (i + 1) % TITLES.length), 3500);
+      return () => clearInterval(iv);
+    }, (DELAY + 2) * 1000);
+    return () => clearTimeout(t);
   }, []);
 
+  const txtX = useTransform(sX, v => v * -0.3);
+  const txtY = useTransform(sY, v => v * -0.3);
+  const imgX = useTransform(sX, v => v * 0.4);
+  const imgY = useTransform(sY, v => v * 0.4);
+
   return (
-    <section 
-      ref={ref} 
-      id="hero" 
-      onMouseMove={handleMouseMove}
-      className="relative min-h-screen lg:min-h-screen flex items-center overflow-hidden bg-[#030303] pt-10 lg:pt-0"
+    <section
+      ref={sectionRef}
+      id="hero"
+      onMouseMove={onMouseMove}
+      className="relative flex items-center overflow-hidden bg-[#030303]"
+      style={{ minHeight: "100svh" }}
     >
-      <LivingBackground />
-      
-      <div className="absolute inset-0 opacity-[0.08]" 
-           style={{ backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)`, backgroundSize: '80px 80px' }} 
+      <AmbientField />
+
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none opacity-20"
+        style={{
+          backgroundImage: `radial-gradient(rgba(59,130,246,0.3) 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
+        }}
       />
 
-      <motion.div 
-        style={{ y: scrollYTransform }} 
-        className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-12 lg:px-16 grid grid-cols-[1.5fr_1fr] lg:grid-cols-[1.2fr_0.8fr] gap-2 md:gap-8 items-center -translate-y-4"
+      <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none z-[1]" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/10 blur-[100px] rounded-full pointer-events-none z-[1]" />
+
+      <motion.div
+        style={{ y: scrollY }}
+        className="relative z-[5] w-full max-w-[1400px] mx-auto px-5 sm:px-8 md:px-12 lg:px-16"
       >
-        
-        {/* -- الجزء الخاص بالنصوص (يسار) -- */}
-        <motion.div 
-          style={{ x: useTransform(springX, (val) => val * -0.5), y: useTransform(springY, (val) => val * -0.5) }} 
-          className="flex flex-col relative z-30"
+        <div
+          className="grid items-center gap-6 sm:gap-10 lg:gap-16"
+          style={{
+            gridTemplateColumns: "1.3fr 1fr",
+            paddingTop:    "clamp(40px, 8vw, 80px)",
+            paddingBottom: "clamp(50px, 10vw,  80px)",
+          }}
         >
-          <div className="flex flex-col gap-0 mb-4 md:mb-8 overflow-visible relative">
-            <MegaExplosion delay={delayOffset} scaleMult={1} />
-            <GlowingText 
-              text="ABDELTAWAP" 
-              startIndex={0} 
-              endColor="#ffffff"
-              className="font-bebas text-[clamp(1.5rem,7vw,8rem)] leading-[0.85] tracking-tight" 
-            />
-            <GlowingText 
-              text="EL-TAWIL" 
-              startIndex={10} 
-              endColor="#3b82f6" 
-              className="font-bebas text-[clamp(1.5rem,7vw,8rem)] leading-[0.85] tracking-tight" 
-            />
-          </div>
 
-          <div className="h-6 md:h-10 mb-4 overflow-hidden relative">
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={titleIdx}
-                initial={{ y: 10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -10, opacity: 0 }}
-                transition={{ duration: 0.4 }} 
-                className="font-mono text-[0.6rem] md:text-[0.9rem] tracking-[0.1em] md:tracking-[0.4em] uppercase text-cyan-300"
-              >
-                {TITLES[titleIdx]}
-              </motion.p>
-            </AnimatePresence>
-          </div>
+          <motion.div style={{ x: txtX, y: txtY }} className="flex flex-col min-w-0">
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: delayOffset + 0.8 }}
-            className="text-slate-400 text-[0.65rem] md:text-[1.1rem] leading-relaxed max-w-[200px] md:max-w-lg mb-6 md:mb-10 font-light"
-          >
-            Engineering <span className="text-white">digital experiences</span> with 
-            <span className="text-blue-400 font-bold"> precision.</span>
-          </motion.p>
+            <div className="relative mb-4 sm:mb-6 overflow-visible mt-6">
+              <Flash delay={DELAY} />
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: delayOffset + 1 }}
-            className="flex flex-col sm:flex-row gap-3"
-          >
-            <motion.a 
-              href="#projects" 
-              whileTap={{ scale: 0.95 }} 
-              className="px-4 py-2 md:px-10 md:py-4 bg-blue-600 text-white font-mono font-bold text-[0.6rem] md:text-[0.8rem] tracking-widest uppercase text-center"
-            >
-              Work
-            </motion.a>
-          </motion.div>
-        </motion.div>
-
-        {/* --- الجزء الخاص بالصورة (يمين) --- */}
-        <motion.div
-          style={{ x: springX, y: springY }} 
-          className="relative flex justify-center items-center z-20"
-        >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: delayOffset + 0.5 }}
-            className="relative flex justify-center items-center"
-          >
-            {/* الحلقات - مصغرة للموبايل */}
-            <motion.div 
-              animate={{ rotateZ: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[140px] h-[140px] md:w-[450px] md:h-[450px] rounded-full border border-dashed border-cyan-500/20"
-            />
-
-            <motion.div 
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="relative group w-[100px] h-[140px] md:w-[320px] md:h-[460px] z-10"
-            >
-              <div className="absolute inset-0 border border-blue-500/40 translate-x-1 translate-y-1 md:translate-x-4 md:translate-y-4 transition-transform duration-500" />
-              
-              <div className="relative w-full h-full overflow-hidden bg-[#0a0a0a] border border-white/10">
-                <Image 
-                  src="/prot-img.jpeg" 
-                  alt="Profile" 
-                  fill 
-                  priority
-                  className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" 
-                />
-                <motion.div 
-                  className="absolute top-0 left-0 w-full h-[2px] bg-cyan-300/50 shadow-[0_0_15px_#22d3ee]"
-                  animate={{ top: ["-10%", "110%", "-10%"] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              <div className="overflow-visible leading-[0.85] font-sans font-black tracking-tighter drop-shadow-lg">
+                <GlowRow
+                  text={NAME_1}
+                  startIdx={0}
+                  endColor="#ffffff"
+                  style={{ fontSize: "clamp(2.5rem, 7.5vw, 7.5rem)" }}
                 />
               </div>
+
+              <div className="overflow-visible leading-[0.85] font-sans font-black tracking-tighter drop-shadow-lg">
+                <GlowRow
+                  text={NAME_2}
+                  startIdx={NAME_1.length}
+                  endColor="#3b82f6"
+                  style={{ fontSize: "clamp(2.5rem, 7.5vw, 7.5rem)" }}
+                />
+              </div>
+            </div>
+
+            <div className="overflow-hidden h-6 sm:h-8 md:h-10 mb-4 sm:mb-6 relative flex items-center">
+              <motion.div
+                className="absolute left-0 w-8 h-px bg-cyan-400 mr-4"
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                transition={{ delay: DELAY + 1, duration: 0.6 }}
+              />
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={titleIdx}
+                  initial={{ y: 20, opacity: 0, filter: "blur(4px)" }}
+                  animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                  exit={{ y: -20, opacity: 0, filter: "blur(4px)" }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="font-mono uppercase text-cyan-300 ml-12"
+                  style={{
+                    fontSize: "clamp(0.6rem, 1.5vw, 0.9rem)",
+                    letterSpacing: "clamp(0.1em, 0.4vw, 0.3em)",
+                  }}
+                >
+                  {TITLES[titleIdx]}
+                </motion.span>
+              </AnimatePresence>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: DELAY + 1.2, duration: 0.8 }}
+              className="text-slate-400 leading-relaxed mb-8 sm:mb-10 font-light"
+              style={{
+                fontSize: "clamp(0.75rem, 1.8vw, 1.1rem)",
+                maxWidth: "clamp(260px, 45vw, 520px)",
+              }}
+            >
+              Building pixel-perfect, scalable web interfaces where{" "}
+              <span className="text-white font-medium">clean code</span> meets{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 font-semibold">
+                exceptional UX.
+              </span>
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: DELAY + 1.4, duration: 0.7 }}
+              className="flex flex-row gap-3 sm:gap-4"
+            >
+              <motion.a
+                href="#projects"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative overflow-hidden rounded-xl border border-blue-500 bg-blue-600 text-center shadow-[0_0_20px_rgba(59,130,246,0.2)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] transition-all"
+                style={{ padding: "clamp(10px,1.5vw,16px) clamp(20px,3.5vw,40px)" }}
+              >
+                <span className="relative z-10 font-sans font-bold text-white uppercase tracking-[0.1em]" style={{ fontSize: "clamp(0.6rem, 1.3vw, 0.85rem)" }}>
+                  Explore Work
+                </span>
+              </motion.a>
+
+              <motion.a
+                href="#contact"
+                whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.05)" }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative overflow-hidden rounded-xl border border-white/10 backdrop-blur-md text-center transition-all"
+                style={{ padding: "clamp(10px,1.5vw,16px) clamp(20px,3.5vw,40px)" }}
+              >
+                <span className="relative z-10 font-sans font-medium text-slate-300 uppercase tracking-[0.1em] group-hover:text-white transition-colors" style={{ fontSize: "clamp(0.6rem, 1.3vw, 0.85rem)" }}>
+                  Contact Me
+                </span>
+              </motion.a>
             </motion.div>
           </motion.div>
-        </motion.div>
+
+          <motion.div
+            style={{ x: imgX, y: imgY }}
+            className="relative flex justify-center items-center"
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="absolute rounded-full border border-dashed border-blue-500/20 pointer-events-none"
+              style={{ width: "clamp(160px,28vw,380px)", height: "clamp(160px,28vw,380px)" }}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)", rotateY: 15 }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)", rotateY: 0 }}
+              transition={{ duration: 1.2, delay: DELAY + 1, ease: "easeOut" }}
+            >
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="group relative"
+                style={{
+                  width:  "clamp(120px, 22vw, 320px)",
+                  height: "clamp(160px, 30vw, 420px)",
+                }}
+              >
+                <div className="absolute inset-0 border border-blue-500/30 rounded-2xl pointer-events-none translate-x-3 translate-y-3 group-hover:translate-x-4 group-hover:translate-y-4 transition-transform duration-500" />
+                
+                <div className="relative w-full h-full overflow-hidden bg-[#0a0a0a] rounded-2xl border border-white/10 z-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                  <Image
+                    src="/prot-img.jpeg"
+                    alt="Abdeltawap Mohamed"
+                    fill
+                    priority
+                    className="object-cover object-top w-full h-full scale-[1.02] group-hover:scale-[1.08] transition-transform duration-700 ease-out grayscale-[15%] group-hover:grayscale-0"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-transparent to-transparent opacity-80" />
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: DELAY + 1.8, duration: 0.6 }}
+                  className="absolute z-20 flex flex-col justify-center border border-white/10 backdrop-blur-xl bg-black/60 rounded-xl"
+                  style={{
+                    bottom: "-15px",
+                    left: "-15px",
+                    padding: "clamp(8px,1.2vw,16px) clamp(12px,1.8vw,24px)",
+                  }}
+                >
+                  <p className="font-mono uppercase text-cyan-400 mb-1" style={{ fontSize: "clamp(7px,0.9vw,11px)", letterSpacing: "0.2em" }}>
+                    Front-End
+                  </p>
+                  <p className="font-sans font-bold text-white tracking-tight leading-none" style={{ fontSize: "clamp(10px,1.2vw,14px)" }}>
+                    Abdeltawap Mohamed
+                  </p>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </div>
       </motion.div>
 
-      {/* مؤشر النزول */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:block">
-        <div className="w-[1px] h-12 bg-gradient-to-b from-blue-500 to-transparent" />
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: DELAY + 2.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-3 z-10"
+      >
+        <div className="w-[1px] h-16 bg-gradient-to-b from-blue-500/50 to-transparent relative overflow-hidden">
+          <motion.div
+            animate={{ y: ["-100%", "100%"] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            className="absolute top-0 left-0 w-full h-1/2 bg-cyan-400"
+          />
+        </div>
+      </motion.div>
     </section>
   );
 }
