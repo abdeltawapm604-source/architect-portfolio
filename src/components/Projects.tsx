@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Terminal, ExternalLink, ArrowRight } from "lucide-react";
 
 const PROJECTS = [
+  {id: "ocean",tag: "Ultimate Hotel Experience",name: "Regent Stay",year: "2026", desc: "A luxury hotel and resort booking platform with personalized member dashboards, multi-language support, and seamless reservation flows.",monogram: "RS",image: "/regent.png",link: "https://regent-stay.vercel.app/#"},
   { id: "ocean",      tag: "Engineering", name: "Ocean",         year: "2024", desc: "High-performance CRM architecture for complex enterprise workflows.",        monogram: "OC", image: "/ocean-preview.png",  link: "https://gitgo-d4gr.vercel.app/#" },
   { id: "Xpremo",     tag: "Luxury",      name: "X Premo",       year: "2024", desc: "Scalable backend infrastructure for a high-traffic luxury marketplace.",         monogram: "XP", image: "/xpreom.png",         link: "https://xpremo.vercel.app/#" },
   { id: "at-store",   tag: "E-Commerce",  name: "AT Store",      year: "2024", desc: "Robust retail system engineered for secure and rapid transactions.",          monogram: "AT", image: "/at-store.png",       link: "https://at-store-zzmq.vercel.app/#" },
